@@ -275,7 +275,7 @@ h2{font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transf
 (function(){
 /* ===== Settings you can edit ===== */
 const TOPIC = (new URLSearchParams(location.search).get("topic")) || "g7-designtalk-nathan-siykl5gj88"; // live channel on ntfy.sh
-const HOST_HASH = "e64e84b1968b30cc25e53077ff068e0341d861edecec135988d278aee46a15dd"; // SHA-256 of the host code (the code itself is not stored here)
+const HOST_HASH = "9dac09a9e138814259e38cf8a800efa88541e845b0d50b05d71c706359700a4b"; // SHA-256 of the host code (the code itself is not stored here)
 /* ================================= */
 
 const PEOPLE = {aimum:"Aimum", quan:"Quan", henil:"Henil", marshal:"Marshal", nathan:"Nathan"};
@@ -571,7 +571,7 @@ function render(){
     s.textContent=l.quote?"“"+l.say+"”":l.say;
     d.append(w,s); box.append(d);
   });
-  $("nowWhen").innerHTML="<b>When</b><span></span>"; $("nowWhen").lastChild.textContent=(c.kind==="popup"?"Aimum decides; usually asked. ":"")+c.when;
+  $("nowWhen").innerHTML="<b>When</b><span></span>"; $("nowWhen").lastChild.textContent=(c.kind==="popup"?"Host decides; usually asked. ":"")+c.when;
   $("now").classList.toggle("mine",involves(i,me.who) && c.kind!=="listen" && !onlyHands(i,me.who));
   $("now").classList.toggle("handing",onlyHands(i,me.who));
   $("notAskedBtn").hidden=!(me.host && (c.kind==="popup"||c.kind==="reserve") && !skipped(c.id));
