@@ -388,7 +388,7 @@ $("switchBtn").addEventListener("click",()=>{S.set("me",null);location.reload();
 let live=S.get("live",{live:false,cue:0,running:false,elapsed:0,skips:[],absent:[],seq:0});
 let liveRecvAt=Date.now();      // local time when "elapsed" was received
 let follow=true;                // team: follow the live cue
-let view=S.get("view",0);       // where this person is looking
+let view=0;                     // where this person is looking (always opens at the start; live mode jumps to the live cue)
 // practice (local) timer
 let pr=S.get("practice",{running:false,elapsed:0,at:0});
 const peers={};                 // host: who -> {view,follow,at}
@@ -504,7 +504,7 @@ function stepFrom(i,dir){ let j=i+dir; while(j>=0 && j<CUES.length && skipped(CU
 function go(dir){
   if(me.host && isLive()){ publish({cue:stepFrom(live.cue,dir)}); view=live.cue; }
   else { view=stepFrom(view,dir); if(isLive()) follow=(view===live.cue); }
-  S.set("view",view); render(); sayHere();
+  render(); sayHere();
 }
 $("prevBtn").addEventListener("click",()=>go(-1));
 $("nextBtn").addEventListener("click",()=>go(1));
@@ -522,7 +522,7 @@ $("startBtn").addEventListener("click",()=>{
 });
 $("resetBtn").addEventListener("click",()=>{
   if(me.host && isLive()){ publish({running:false,elapsed:0,cue:0}); view=0; }
-  else { pr={running:false,elapsed:0,at:0}; S.set("practice",pr); view=0; S.set("view",0); render(); }
+  else { pr={running:false,elapsed:0,at:0}; S.set("practice",pr); view=0; render(); }
 });
 $("pullAll").addEventListener("click",()=>send({k:"force",to:"all",cue:live.cue,at:Date.now()}));
 $("cutBtn").addEventListener("click",()=>{
@@ -614,7 +614,7 @@ function render(){
     if(k===view) b.setAttribute("aria-current","step");
     b.addEventListener("click",()=>{
       if(me.host && L){ publish({cue:k}); }
-      else { view=k; if(L) follow=(k===live.cue); S.set("view",view); render(); sayHere(); }
+      else { view=k; if(L) follow=(k===live.cue); render(); sayHere(); }
       window.scrollTo({top:0,behavior:"smooth"});
     });
     li.append(b);
