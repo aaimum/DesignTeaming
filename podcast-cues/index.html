@@ -514,7 +514,7 @@ $("backLive").addEventListener("click",()=>{follow=true;view=live.cue;render();s
 
 $("liveBtn").addEventListener("click",()=>{
   if(isLive()){ publish({live:false,running:false}); }
-  else { publish({live:true,cue:view,running:false,elapsed:0}); }
+  else { view=0; publish({live:true,cue:0,running:false,elapsed:0,skips:[]}); } // always start from the top, clear practice skips; attendance is kept
 });
 $("startBtn").addEventListener("click",()=>{
   if(me.host && isLive()){ const e=elapsedMs(); publish({running:!live.running,elapsed:e}); }
