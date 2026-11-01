@@ -14,6 +14,7 @@
   --onair:#D3263A; --you:#F2B705; --you-ink:#3A2B00; --you-wash:#FFF4CF;
   --accent:#1E5AA0; --accent-wash:#E3ECF7; --pop:#0F7C72; --pop-wash:#DDF1EE;
   --ok:#1D7A3A; --late:#B4441B;
+  --hand:#6A3FB0; --hand-wash:#EEE7FA;
   --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
   --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
@@ -23,7 +24,7 @@
   --bg:#0F1216; --surface:#181C22; --ink:#ECEFF3; --muted:#9AA3B0; --line:#2A3039;
   --onair:#FF4D5E; --you:#F5C33B; --you-ink:#2A1F00; --you-wash:#3A3112;
   --accent:#73A9F2; --accent-wash:#1B2840; --pop:#4FD1BF; --pop-wash:#12302C;
-  --ok:#5CCB7C; --late:#FF8A5C; color-scheme:dark}}
+  --ok:#5CCB7C; --late:#FF8A5C; --hand:#B99BF2; --hand-wash:#2A2240; color-scheme:dark}}
 *{box-sizing:border-box}
 html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
@@ -58,8 +59,8 @@ button{font:inherit;cursor:pointer;color:inherit}
 .clock{font-family:var(--f-mono);font-weight:700;font-size:26px;font-variant-numeric:tabular-nums}
 .pill{font-size:13px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--bg);color:var(--muted)}
 .pill.ok{color:var(--ok)} .pill.late{color:var(--late)}
-.me{margin-left:auto;display:flex;align-items:center;gap:8px;font-weight:700}
-.me .tag{background:var(--you);color:var(--you-ink);padding:2px 10px;border-radius:999px}
+.bar .me{margin-left:auto;display:flex;align-items:center;gap:8px;font-weight:700}
+.bar .me .tag{background:var(--you);color:var(--you-ink);padding:2px 10px;border-radius:999px}
 .linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:13px;padding:0}
 
 main .wrap{display:flex;flex-direction:column;gap:18px;padding-block:18px 48px}
@@ -82,12 +83,17 @@ main .wrap{display:flex;flex-direction:column;gap:18px;padding-block:18px 48px}
 .k-listen,.k-hello,.k-after{background:var(--bg);color:var(--muted)}
 .youflag{display:none;background:var(--you);color:var(--you-ink);font-family:var(--f-display);font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:4px;font-size:15px;align-self:flex-start}
 .now.mine .youflag{display:inline-block}
+.now.handing{border-left-color:var(--hand)}
+.handflag{display:none;background:var(--hand);color:var(--surface);font-family:var(--f-display);font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:4px;font-size:15px;align-self:flex-start}
+.now.handing .handflag{display:inline-block}
 .lines{display:flex;flex-direction:column;gap:14px}
 .line{display:flex;flex-direction:column;gap:2px}
 .line .who{font-family:var(--f-display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:15px;color:var(--muted)}
 .line.me .who{color:var(--late)}
 .line .say{font-size:clamp(20px,4.6vw,27px);line-height:1.35;font-weight:700;text-wrap:pretty}
 .line.soft .say{font-size:18px;font-weight:700}
+.line.handover{align-self:flex-start;background:var(--hand-wash);border-left:4px solid var(--hand);border-radius:6px;padding:8px 12px}
+.line.handover .who,.line.handover.me .who{color:var(--hand)}
 .line.hint .say{font-size:16px;font-weight:400;color:var(--muted);font-style:italic}
 .line.dim .say{font-size:18px;font-weight:400;color:var(--muted)}
 .when{background:var(--bg);border-radius:6px;padding:10px 12px;font-size:15px;display:flex;flex-direction:column;gap:4px}
@@ -100,6 +106,7 @@ main .wrap{display:flex;flex-direction:column;gap:18px;padding-block:18px 48px}
 .mini .say{font-size:16px;font-weight:700}
 .mini .sub{font-size:14px;color:var(--muted)}
 .mini.hot{border-color:var(--you);box-shadow:inset 0 0 0 1px var(--you)}
+.mini.hot.hand{border-color:var(--hand);box-shadow:inset 0 0 0 1px var(--hand)}
 
 /* host console */
 .console{border:2px solid var(--ink)}
@@ -127,6 +134,7 @@ h2{font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transf
 .order .txt small{display:block;color:var(--muted);font-size:13px}
 .order li.live{background:var(--accent-wash)}
 .order li.mine .lab{background:var(--you);color:var(--you-ink);border-radius:3px;padding:0 4px}
+.order li.hand .lab{background:var(--hand);color:var(--surface);border-radius:3px;padding:0 4px}
 .order li.skipped .txt{text-decoration:line-through;color:var(--muted)}
 .order li.skipped .lab::after{content:" skip";color:var(--late)}
 .order .skip{margin-right:10px}
@@ -200,6 +208,7 @@ h2{font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transf
     <section class="card now" id="now" aria-live="polite">
       <div class="eyebrow"><span>Now</span><span class="kind" id="nowKind"></span><span id="nowLabel"></span><span class="planned" id="nowPlanned"></span></div>
       <span class="youflag">Your turn</span>
+      <span class="handflag">Hand over, then mute</span>
       <div class="lines" id="nowLines"></div>
       <div class="when" id="nowWhen"></div>
       <div class="nav" id="nav">
@@ -214,7 +223,7 @@ h2{font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transf
     </div>
 
     <h2>Running order</h2>
-    <p class="lede">Times are minutes from "Hi, and welcome". Tap a row to look at it; in a live session, "Back to live" returns you. Your lines are highlighted.</p>
+    <p class="lede">Times are minutes from "Hi, and welcome". Tap a row to look at it; in a live session, "Back to live" returns you. Your questions are yellow; your handovers are purple.</p>
     <ol class="order" id="order"></ol>
 
     <div id="checkWrap" hidden>
@@ -415,6 +424,8 @@ function linesFor(i){
 }
 const involves=(i,who)=>linesFor(i).some(l=>l.who===who);
 const asksAt=(i,who)=>{const ls=linesFor(i);return ls.some(l=>l.who===who && l.style==="main");};
+const handsOver=(i,who)=>linesFor(i).some(l=>l.who===who && l.tag==="handover");
+const onlyHands=(i,who)=>handsOver(i,who) && !asksAt(i,who);
 
 /* ---------- live channel (ntfy.sh) ---------- */
 const BASE="https://ntfy.sh/"+TOPIC;
@@ -542,7 +553,7 @@ function render(){
   const ls=linesFor(i);
   ls.forEach(l=>{
     const d=document.createElement("div");
-    d.className="line"+(l.who===me.who?" me":"")+(l.style!=="main"?" "+l.style:"");
+    d.className="line"+(l.who===me.who?" me":"")+(l.style!=="main"?" "+l.style:"")+(l.tag==="handover"?" handover":"");
     const w=document.createElement("span"); w.className="who";
     w.textContent=PEOPLE[l.who]+(l.who===me.who?" (you)":"")+(l.tag?" · "+l.tag:"");
     const s=document.createElement("span"); s.className="say";
@@ -550,7 +561,8 @@ function render(){
     d.append(w,s); box.append(d);
   });
   $("nowWhen").innerHTML="<b>When</b><span></span>"; $("nowWhen").lastChild.textContent=c.when;
-  $("now").classList.toggle("mine",involves(i,me.who) && c.kind!=="listen");
+  $("now").classList.toggle("mine",involves(i,me.who) && c.kind!=="listen" && !onlyHands(i,me.who));
+  $("now").classList.toggle("handing",onlyHands(i,me.who));
   $("prevBtn").disabled=i===0; $("nextBtn").disabled=i===CUES.length-1;
 
   // next
@@ -561,15 +573,17 @@ function render(){
   } else { $("nextSay").textContent="End of the running order."; $("nextSub").textContent=""; }
 
   // mine
-  const mc=$("mineCard"); mc.classList.remove("hot");
+  const mc=$("mineCard"); mc.classList.remove("hot","hand");
   const base=L?live.cue:view;
-  if(involves(base,me.who) && CUES[base].kind!=="listen"){ $("mineSay").textContent="It's you, right now."; $("mineSub").textContent=L?"Read the live card.":"Read the big text above."; mc.classList.add("hot"); }
+  if(onlyHands(base,me.who)){ const h=linesFor(base).find(l=>l.tag==="handover"); const o=ownerOf(CUES[base]);
+    $("mineSay").textContent="Hand over now: “"+h.say+"”"; $("mineSub").textContent="Then mute. This question is "+PEOPLE[o]+"'s."; mc.classList.add("hot","hand"); }
+  else if(involves(base,me.who) && CUES[base].kind!=="listen"){ $("mineSay").textContent="It's you, right now."; $("mineSub").textContent=L?"Read the live card.":"Read the big text above."; mc.classList.add("hot"); }
   else{
     let j=base+1; while(j<CUES.length && (skipped(CUES[j].id) || !involves(j,me.who))) j++;
     if(j<CUES.length){ const l=linesFor(j).filter(x=>x.who===me.who).pop(); let away=0; for(let k=base+1;k<=j;k++) if(!skipped(CUES[k].id)) away++;
       $("mineSay").textContent=(l.style==="soft"?"Handover: ":"")+"“"+l.say+"”";
       $("mineSub").textContent=CUES[j].label+" · "+(away===1?"next cue":away+" cues away")+" · planned "+fmtPlan(CUES[j].t)+(CUES[j].kind==="popup"?" · optional":"");
-      if(away===1) mc.classList.add("hot");
+      if(away===1){ mc.classList.add("hot"); if(l.tag==="handover") mc.classList.add("hand"); }
     } else { $("mineSay").textContent="No more lines for you."; $("mineSub").textContent="Stay muted and enjoy it."; }
   }
 
@@ -577,7 +591,7 @@ function render(){
   const ol=$("order"); ol.innerHTML="";
   CUES.forEach((q,k)=>{
     const li=document.createElement("li");
-    li.className=(L&&k===live.cue?"live ":"")+(involves(k,me.who)&&q.kind!=="listen"?"mine ":"")+(skipped(q.id)?"skipped":"");
+    li.className=(L&&k===live.cue?"live ":"")+(onlyHands(k,me.who)?"hand ":(involves(k,me.who)&&q.kind!=="listen"?"mine ":""))+(skipped(q.id)?"skipped":"");
     const b=document.createElement("button"); b.type="button"; b.className="go";
     const main=linesFor(k).filter(x=>x.style==="main"||x.style==="dim");
     const who=[...new Set(main.map(x=>PEOPLE[x.who]))].join(", ");
