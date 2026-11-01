@@ -386,11 +386,13 @@ $("switchBtn").addEventListener("click",()=>{S.set("me",null);location.reload();
 /* ---------- state ---------- */
 // shared (host-owned) state, received over the live channel
 let live=S.get("live",{live:false,cue:0,running:false,elapsed:0,skips:[],absent:[],seq:0});
-let liveRecvAt=Date.now();      // local time when "elapsed" was received
+// a saved session older than 3 hours (e.g. a test run yesterday) is over: don't reopen in live mode or re-broadcast it
+if(live.live && Date.now()-(live._ts||0)>3*3600*1000) live={...live,live:false,running:false,cue:0,elapsed:0,skips:[],absent:[]};
+let liveRecvAt=live._recv||Date.now(); // local time when "elapsed" was received (kept across reloads so the clock doesn't jump back)
 let follow=true;                // team: follow the live cue
 let view=0;                     // where this person is looking (always opens at the start; live mode jumps to the live cue)
 // practice (local) timer
-let pr=S.get("practice",{running:false,elapsed:0,at:0});
+let pr={running:false,elapsed:0,at:0}; // starts fresh every time the page opens
 const peers={};                 // host: who -> {view,follow,at}
 
 const isLive=()=>!!live.live;
@@ -466,7 +468,7 @@ function handle(d,serverTime){
     live={...d,_ts:sent};
     if(age>3*3600*1000) live.live=false;
     if(live.running) live.elapsed=(d.elapsed||0)+Math.max(0,age);
-    liveRecvAt=Date.now();
+    liveRecvAt=Date.now(); live._recv=liveRecvAt;
     S.set("live",live);
     if(!wasLive && isLive()) follow=true;
     if(follow && isLive()) view=live.cue;
@@ -493,7 +495,7 @@ setInterval(()=>{ if(me && !me.host && isLive()) sayHere(true); },180000);
 function publish(patch){
   const e=patch.elapsed!==undefined?patch.elapsed:elapsedMs();
   live={...live,...patch,elapsed:e,seq:(live.seq||0)+1,at:Date.now(),_ts:Date.now(),k:"state"};
-  liveRecvAt=Date.now(); S.set("live",live);
+  liveRecvAt=Date.now(); live._recv=liveRecvAt; S.set("live",live);
   if(isLive()||patch.live===false) send(live);
   render();
 }
@@ -513,16 +515,16 @@ document.addEventListener("keydown",e=>{ if(!me||e.target.closest("input,textare
 $("backLive").addEventListener("click",()=>{follow=true;view=live.cue;render();sayHere();});
 
 $("liveBtn").addEventListener("click",()=>{
-  if(isLive()){ publish({live:false,running:false}); }
+  if(isLive()){ if(!confirm("End the live session for everyone?")) return; publish({live:false,running:false}); }
   else { view=0; publish({live:true,cue:0,running:false,elapsed:0,skips:[]}); } // always start from the top, clear practice skips; attendance is kept
 });
 $("startBtn").addEventListener("click",()=>{
   if(me.host && isLive()){ const e=elapsedMs(); publish({running:!live.running,elapsed:e}); }
-  else { if(pr.running){pr.elapsed=elapsedMs();pr.running=false;} else {pr.at=Date.now();pr.running=true;} S.set("practice",pr); render(); }
+  else { if(pr.running){pr.elapsed=elapsedMs();pr.running=false;} else {pr.at=Date.now();pr.running=true;} render(); }
 });
 $("resetBtn").addEventListener("click",()=>{
-  if(me.host && isLive()){ publish({running:false,elapsed:0,cue:0}); view=0; }
-  else { pr={running:false,elapsed:0,at:0}; S.set("practice",pr); view=0; render(); }
+  if(me.host && isLive()){ if(!confirm("Reset the timer and send everyone back to the start?")) return; publish({running:false,elapsed:0,cue:0}); view=0; }
+  else { pr={running:false,elapsed:0,at:0}; view=0; render(); }
 });
 $("pullAll").addEventListener("click",()=>send({k:"force",to:"all",cue:live.cue,at:Date.now()}));
 $("cutBtn").addEventListener("click",()=>{
@@ -613,7 +615,7 @@ function render(){
     const sm=document.createElement("small"); sm.textContent=KIND[q.kind]+" · "+who+(CUT_ORDER.includes(q.id)?" · can cut":""); b.children[2].append(sm);
     if(k===view) b.setAttribute("aria-current","step");
     b.addEventListener("click",()=>{
-      if(me.host && L){ publish({cue:k}); }
+      if(me.host && L){ if(k!==live.cue && !confirm("Move everyone to "+q.label+"?")) return; publish({cue:k}); }
       else { view=k; if(L) follow=(k===live.cue); render(); sayHere(); }
       window.scrollTo({top:0,behavior:"smooth"});
     });
@@ -690,13 +692,14 @@ function addPracticeTimer(){
 
 /* checklist */
 function buildChecks(){
-  const done=S.get("checks",[]);
+  const CK="checks:"+new Date().toDateString(); // ticks reset each day, so practice ticks don't carry into the interview
+  const done=S.get(CK,[]);
   CHECKS.forEach((t,k)=>{
     const li=document.createElement("li"); const id="chk"+k;
     li.innerHTML='<label for="'+id+'"><input type="checkbox" id="'+id+'"><span></span></label>';
     li.querySelector("span").textContent=t;
     const cb=li.querySelector("input"); cb.checked=done.includes(k);
-    cb.addEventListener("change",()=>{const s=new Set(S.get("checks",[]));cb.checked?s.add(k):s.delete(k);S.set("checks",[...s]);});
+    cb.addEventListener("change",()=>{const s=new Set(S.get(CK,[]));cb.checked?s.add(k):s.delete(k);S.set(CK,[...s]);});
     $("checks").append(li);
   });
 }
