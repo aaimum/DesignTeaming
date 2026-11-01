@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nathan Interview Cue Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: phone-first single column. Sticky studio bar (on-air, clock, link status), live cue card as hero, host console for Aimum only, running order and rules below. */
+:root{
+  --bg:#EDEFF2; --surface:#FFFFFF; --ink:#14171C; --muted:#5A626F; --line:#D3D8DF;
+  --onair:#D3263A; --you:#F2B705; --you-ink:#3A2B00; --you-wash:#FFF4CF;
+  --accent:#1E5AA0; --accent-wash:#E3ECF7; --pop:#0F7C72; --pop-wash:#DDF1EE;
+  --ok:#1D7A3A; --late:#B4441B;
+  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0F1216; --surface:#181C22; --ink:#ECEFF3; --muted:#9AA3B0; --line:#2A3039;
+  --onair:#FF4D5E; --you:#F5C33B; --you-ink:#2A1F00; --you-wash:#3A3112;
+  --accent:#73A9F2; --accent-wash:#1B2840; --pop:#4FD1BF; --pop-wash:#12302C;
+  --ok:#5CCB7C; --late:#FF8A5C; color-scheme:dark}}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+[hidden]{display:none!important}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:8px 12px;font-weight:700;font-size:14px}
+.btn:hover{border-color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn.warn{border-color:var(--late);color:var(--late)}
+.btn.small{padding:4px 8px;font-size:13px}
+
+/* sign-in */
+.gate{min-height:100vh;display:grid;place-items:center;padding-block:32px}
+.gate form{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:12px;width:min(420px,100%)}
+.gate h1{font-family:var(--f-display);font-size:32px;letter-spacing:.03em;text-transform:uppercase;margin:0;line-height:1.05}
+.gate p{margin:0;color:var(--muted)}
+.gate input{font:inherit;font-size:20px;padding:12px;border:2px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.gate .err{color:var(--late);font-weight:700;min-height:1.5em}
+
+/* studio bar */
+.bar{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-block:10px}
+.onair{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:700;letter-spacing:.12em;font-size:15px;padding:3px 9px;border:2px solid var(--line);border-radius:4px;color:var(--muted)}
+.onair i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.onair.live{border-color:var(--onair);color:var(--onair)}
+.onair.live i{background:var(--onair);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.onair.live i{animation:none}}
+.clock{font-family:var(--f-mono);font-weight:700;font-size:26px;font-variant-numeric:tabular-nums}
+.pill{font-size:13px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--bg);color:var(--muted)}
+.pill.ok{color:var(--ok)} .pill.late{color:var(--late)}
+.me{margin-left:auto;display:flex;align-items:center;gap:8px;font-weight:700}
+.me .tag{background:var(--you);color:var(--you-ink);padding:2px 10px;border-radius:999px}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:13px;padding:0}
+
+main .wrap{display:flex;flex-direction:column;gap:18px;padding-block:18px 48px}
+.banner{border-radius:8px;padding:10px 14px;font-weight:700;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.banner.practice{background:var(--accent-wash);color:var(--accent)}
+.banner.off{background:var(--you-wash);color:var(--ink);border:2px solid var(--you)}
+.banner .btn{margin-left:auto}
+
+/* cue card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.now{border-left:8px solid var(--accent)}
+.now.mine{border-left-color:var(--you);background:var(--you-wash)}
+.eyebrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--f-display);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+.eyebrow .planned{font-family:var(--f-mono);letter-spacing:0;text-transform:none;margin-left:auto}
+.kind{padding:2px 8px;border-radius:4px;font-weight:700}
+.k-script,.k-closing{background:var(--accent-wash);color:var(--accent)}
+.k-main{background:var(--ink);color:var(--surface)}
+.k-popup{background:var(--pop-wash);color:var(--pop)}
+.k-reserve{background:var(--bg);color:var(--muted);border:1px dashed var(--muted)}
+.k-listen,.k-hello,.k-after{background:var(--bg);color:var(--muted)}
+.youflag{display:none;background:var(--you);color:var(--you-ink);font-family:var(--f-display);font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:4px;font-size:15px;align-self:flex-start}
+.now.mine .youflag{display:inline-block}
+.lines{display:flex;flex-direction:column;gap:14px}
+.line{display:flex;flex-direction:column;gap:2px}
+.line .who{font-family:var(--f-display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:15px;color:var(--muted)}
+.line.me .who{color:var(--late)}
+.line .say{font-size:clamp(20px,4.6vw,27px);line-height:1.35;font-weight:700;text-wrap:pretty}
+.line.soft .say{font-size:18px;font-weight:700}
+.line.hint .say{font-size:16px;font-weight:400;color:var(--muted);font-style:italic}
+.line.dim .say{font-size:18px;font-weight:400;color:var(--muted)}
+.when{background:var(--bg);border-radius:6px;padding:10px 12px;font-size:15px;display:flex;flex-direction:column;gap:4px}
+.when b{font-family:var(--f-display);letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+.nav{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.nav .btn{padding:14px;font-size:16px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.duo{grid-template-columns:1fr}}
+.mini{padding:14px;gap:6px}
+.mini .say{font-size:16px;font-weight:700}
+.mini .sub{font-size:14px;color:var(--muted)}
+.mini.hot{border-color:var(--you);box-shadow:inset 0 0 0 1px var(--you)}
+
+/* host console */
+.console{border:2px solid var(--ink)}
+.console h2{margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.team{width:100%;border-collapse:collapse;font-size:15px}
+.team td,.team th{padding:8px 6px;border-top:1px solid var(--line);text-align:left;vertical-align:middle}
+.team th{font-family:var(--f-display);letter-spacing:.08em;text-transform:uppercase;font-size:12px;color:var(--muted);border-top:0}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--line);margin-right:6px}
+.dot.on{background:var(--ok)}
+.flag-off{color:var(--late);font-weight:700}
+.flag-ok{color:var(--ok);font-weight:700}
+.team input{width:20px;height:20px;accent-color:var(--ok)}
+
+h2{font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:22px;margin:8px 0 0}
+.lede{color:var(--muted);margin:0;max-width:65ch}
+.order{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+.order li{border-top:1px solid var(--line);display:flex;align-items:center}
+.order li:first-child{border-top:0}
+.order .go{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:3.4em 4.6em 1fr;gap:10px;align-items:baseline;flex:1;min-width:0;padding:10px 14px}
+.order .go:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.order .t{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
+.order .lab{font-family:var(--f-display);font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:14px}
+.order .txt{min-width:0;font-size:15px}
+.order .txt small{display:block;color:var(--muted);font-size:13px}
+.order li.live{background:var(--accent-wash)}
+.order li.mine .lab{background:var(--you);color:var(--you-ink);border-radius:3px;padding:0 4px}
+.order li.skipped .txt{text-decoration:line-through;color:var(--muted)}
+.order li.skipped .lab::after{content:" skip";color:var(--late)}
+.order .skip{margin-right:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:620px){.grid2{grid-template-columns:1fr}}
+.rule{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
+.rule h3{margin:0 0 4px;font-size:16px}
+.rule p{margin:0;color:var(--muted);font-size:15px}
+.checks{list-style:none;margin:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px}
+.checks label{display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:6px;cursor:pointer}
+.checks input{width:20px;height:20px;margin-top:2px;accent-color:var(--ok);flex:none}
+.checks input:checked + span{color:var(--muted);text-decoration:line-through}
+.tablewrap{overflow-x:auto}
+.codes{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.codes td{padding:10px 14px;border-top:1px solid var(--line);vertical-align:top;font-size:15px}
+.codes tr:first-child td{border-top:0}
+.codes td:first-child{font-family:var(--f-mono);font-weight:700;white-space:nowrap}
+.foot{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- SIGN-IN -->
+<section class="gate wrap" id="gate">
+  <form id="gateForm" autocomplete="off">
+    <h1>Design Talk<br>with Nathan</h1>
+    <p>Type your first name to open your view.</p>
+    <label for="who" class="lede" style="font-weight:700">Your name</label>
+    <input id="who" name="who" placeholder="e.g. Quan" autocapitalize="off" spellcheck="false">
+    <div class="err" id="gateErr" role="alert"></div>
+    <button class="btn primary" type="submit" style="padding:14px;font-size:18px">Open my view</button>
+  </form>
+</section>
+
+<!-- APP -->
+<div id="app" hidden>
+<header class="bar">
+  <div class="wrap">
+    <span class="onair" id="onair"><i></i>ON AIR</span>
+    <span class="clock" id="clock">00:00</span>
+    <span class="pill" id="pace">Not started</span>
+    <span class="pill" id="net">Connecting…</span>
+    <span class="me"><span class="tag" id="meTag"></span><button class="linkbtn" id="switchBtn" type="button">Not you?</button></span>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="banner practice" id="practiceBanner">Practice mode. Nothing you do here affects anyone else. When Aimum goes live, this page switches over by itself.</div>
+    <div class="banner off" id="offBanner" hidden><span id="offText"></span><button class="btn primary" id="backLive" type="button">Back to live</button></div>
+
+    <!-- host console -->
+    <section class="card console" id="console" hidden>
+      <div class="eyebrow">Host console · only you see this</div>
+      <div class="row">
+        <button class="btn primary" id="liveBtn" type="button">Go live</button>
+        <button class="btn" id="startBtn" type="button">Start timer</button>
+        <button class="btn" id="resetBtn" type="button">Reset</button>
+        <button class="btn" id="pullAll" type="button">Move everyone to live cue</button>
+        <button class="btn warn" id="cutBtn" type="button">Behind? Skip next cut</button>
+      </div>
+      <div class="tablewrap">
+      <table class="team">
+        <thead><tr><th>On call</th><th>Name</th><th>Page</th><th>Looking at</th><th></th></tr></thead>
+        <tbody id="teamRows"></tbody>
+      </table>
+      </div>
+      <p class="foot" id="cutHint"></p>
+    </section>
+
+    <section class="card now" id="now" aria-live="polite">
+      <div class="eyebrow"><span>Now</span><span class="kind" id="nowKind"></span><span id="nowLabel"></span><span class="planned" id="nowPlanned"></span></div>
+      <span class="youflag">Your turn</span>
+      <div class="lines" id="nowLines"></div>
+      <div class="when" id="nowWhen"></div>
+      <div class="nav" id="nav">
+        <button class="btn" id="prevBtn" type="button">← Back</button>
+        <button class="btn primary" id="nextBtn" type="button">Next cue →</button>
+      </div>
+    </section>
+
+    <div class="duo">
+      <section class="card mini" id="nextCard"><div class="eyebrow">Up next</div><div class="say" id="nextSay"></div><div class="sub" id="nextSub"></div></section>
+      <section class="card mini" id="mineCard"><div class="eyebrow">Your next line</div><div class="say" id="mineSay"></div><div class="sub" id="mineSub"></div></section>
+    </div>
+
+    <h2>Running order</h2>
+    <p class="lede">Times are minutes from "Hi, and welcome". Tap a row to look at it; in a live session, "Back to live" returns you. Your lines are highlighted.</p>
+    <ol class="order" id="order"></ol>
+
+    <div id="checkWrap" hidden>
+      <h2>2:45 pm, before Nathan joins</h2>
+      <ul class="checks" id="checks"></ul>
+    </div>
+
+    <h2>House rules</h2>
+    <div class="grid2">
+      <div class="rule"><h3>Stay muted</h3><p>Unmute only when the answer before your question is wrapping up. Mute again as soon as Nathan starts answering.</p></div>
+      <div class="rule"><h3>Wait two seconds</h3><p>When Nathan stops talking, count two seconds before you speak. No talking over him, and the editor gets a clean cut.</p></div>
+      <div class="rule"><h3>React short, then ask</h3><p>One short reaction in your own words, then read your question exactly as written. Then stop talking.</p></div>
+      <div class="rule"><h3>Don't explain the question</h3><p>No "so my question is basically…". The question is short on purpose.</p></div>
+      <div class="rule"><h3>Nod, don't "mm-hmm"</h3><p>While Nathan talks, react with your face, not your voice. Background "yeah" ruins clips.</p></div>
+      <div class="rule"><h3>Hand over in one line</h3><p>When the next question belongs to someone else, the person who asked last hands over: "Quan, over to you." The page shows you the exact line.</p></div>
+      <div class="rule"><h3>Look at the camera</h3><p>Especially while you ask. Light in front of you, not behind.</p></div>
+      <div class="rule"><h3>Never share your screen</h3><p>This page is for us. Nathan should never see it.</p></div>
+    </div>
+
+    <h2>If something goes wrong</h2>
+    <div class="grid2">
+      <div class="rule"><h3>Someone can't make it</h3><p>Aimum marks them off the call. Their questions move to the right person automatically and the handovers update. Marshal never picks up extra questions.</p></div>
+      <div class="rule"><h3>Someone drops mid-call</h3><p>Message OUT on WhatsApp. Aimum marks you off the call and your next question moves on everyone's screen.</p></div>
+      <div class="rule"><h3>Nathan already covers a later topic</h3><p>If he answers a later question on his own while telling another story, Aimum skips that question.</p></div>
+      <div class="rule"><h3>Running behind</h3><p>Cut in this order: 5a, 5b, Q6, 3a, 1a. Never cut the intro, the PinnTag question, Q1 to Q5, Q7 or the Closing.</p></div>
+      <div class="rule"><h3>Aimum drops</h3><p>Quan hosts. Read Aimum's lines from your screen until he's back. The Zoom recording keeps running.</p></div>
+      <div class="rule"><h3>Nathan drops</h3><p>Stay on, stay muted, don't chat about it on the call. Aimum messages Nathan. We cut the gap later.</p></div>
+      <div class="rule"><h3>Nathan goes quiet</h3><p>He may be thinking. Give him 3 to 4 seconds. If he looks unsure what we mean, Aimum asks it again more simply.</p></div>
+      <div class="rule"><h3>You fluff your question</h3><p>Stop, say "Let me ask that again", and repeat it cleanly. The editor cuts the first try.</p></div>
+    </div>
+
+    <h2>WhatsApp signals</h2>
+    <p class="lede">Use the team WhatsApp group during the call, never the Zoom chat: Nathan can see it and it is saved with the recording.</p>
+    <div class="tablewrap"><table class="codes">
+      <tr><td>MIC</td><td>Someone's mic is on and picking up noise. Check yours.</td></tr>
+      <tr><td>OUT</td><td>I've lost connection or audio. Cover my next line.</td></tr>
+    </table></div>
+    <p class="foot">Interview with Nathan Settlage, Chief Product Officer at PinnTag. Tuesday 10 November 2026, 3:00 pm Dublin / 10:00 am EST, on UCD Zoom. Team on the call from 2:45 pm.</p>
+  </div>
+</main>
+</div>
+
+<script>
+(function(){
+/* ===== Settings you can edit ===== */
+const TOPIC = (new URLSearchParams(location.search).get("topic")) || "g7-designtalk-nathan-siykl5gj88"; // live channel on ntfy.sh
+const HOST_CODE = "aimum-host";                   // what Aimum types to get the host console
+/* ================================= */
+
+const PEOPLE = {aimum:"Aimum", quan:"Quan", henil:"Henil", marshal:"Marshal", nathan:"Nathan"};
+const TEAM = ["quan","henil","marshal"];           // can be marked off the call
+const KIND = {script:"Script",hello:"Hellos",listen:"Listen",main:"Main question",popup:"Pop-up",reserve:"Reserve",closing:"Closing",after:"After"};
+const CUT_ORDER = ["5a","5b","q6","3a","1a"];
+
+// owners = who asks, first one present wins. Marshal never appears as a fallback.
+const CUES = [
+ {id:"open",t:0,kind:"script",label:"Open",owners:["aimum","quan"],asks:true,protect:true,
+  say:p=>`Hi, and welcome to Design Talk. I'm ${p}, your host today, and I'm joined by…`,
+  when:"Aimum taps Start as he begins. Check the Zoom recording dot is on."},
+ {id:"hellos",t:0.5,kind:"hello",label:"Hellos",protect:true,
+  when:"One line each, in this order, straight after the host. Nothing extra."},
+ {id:"intro",t:1,kind:"script",label:"Intro",owners:["aimum","quan"],asks:true,protect:true,
+  say:()=>"We're studying Digital Innovation at UCD Smurfit. Today we're looking at a day in the life of a product leader, and how AI is impacting their work. Our guest is Nathan Settlage, Chief Product Officer at PinnTag in Atlanta. Nathan, thanks for joining us. Could you tell us a little about yourself?",
+  when:"Read this word for word."},
+ {id:"listen",t:1.5,kind:"listen",label:"Nathan",protect:true,
+  when:"About 2 to 3 minutes. Everyone muted. Nod, don't speak."},
+ {id:"pinntag",t:4,kind:"popup",label:"PinnTag",owners:["quan","aimum"],asks:true,protect:true,
+  react:"Thanks, Nathan.",say:()=>"And what does PinnTag do?",
+  when:"Ask once Nathan finishes his intro. Skip only if he already explained PinnTag. Pairs with Henil's Q4."},
+ {id:"q1",t:6,kind:"main",label:"Q1",owners:["aimum","quan"],asks:true,protect:true,
+  react:"That's a great picture of PinnTag.",say:()=>"What does your day actually look like as CPO?",
+  when:"The opener for the episode's theme."},
+ {id:"1a",t:10,kind:"popup",label:"1a",owners:["aimum","quan"],asks:true,
+  react:"Interesting.",say:()=>"What did you say no to this week?",
+  when:"Ask if his day answer stays general. Skip if he already talked about priorities or saying no."},
+ {id:"q2",t:13,kind:"main",label:"Q2",owners:["marshal","henil","aimum"],asks:true,protect:true,
+  react:"Thanks, Nathan.",say:()=>"How did you go from coaching teams to running product?",
+  when:"The story only Nathan can tell. Let him run with it."},
+ {id:"q3",t:20,kind:"main",label:"Q3",owners:["marshal","henil","quan"],asks:true,protect:true,
+  react:"That's a great story.",say:()=>"What carries over from a big enterprise to a startup, and what doesn't?",
+  when:"Straight after Nathan finishes Q2."},
+ {id:"3a",t:25,kind:"popup",label:"3a",owners:["quan","henil","aimum"],asks:true,
+  react:"That's really honest.",say:()=>"What did you have to unlearn, and what replaced it?",
+  when:"Ask if he mentions something he changed, or something that didn't work at the startup."},
+ {id:"q4",t:28,kind:"main",label:"Q4",owners:["quan","aimum"],asks:true,protect:true,
+  react:"Let's get into AI.",say:()=>"What gets harder when building gets easier with AI?",
+  when:"The episode's big AI question. Give it space."},
+ {id:"q5",t:35,kind:"main",label:"Q5",owners:["aimum","quan"],asks:true,protect:true,
+  react:"That's a great point.",say:()=>"How do you decide what AI gets to decide?",
+  when:"Follows straight on from Q4."},
+ {id:"5a",t:40,kind:"popup",label:"5a",owners:["aimum","quan"],asks:true,
+  react:"Interesting.",say:()=>"What has AI changed that you didn't expect?",
+  when:"Only if his Q5 answer stays abstract. First to cut if we're behind."},
+ {id:"5b",t:42,kind:"popup",label:"5b",owners:["quan","henil","aimum"],asks:true,
+  react:"Thanks, Nathan.",say:()=>"How do you make AI feel simple for people who aren't technical?",
+  when:"Ask if he talks about users or PinnTag's product. Second to cut."},
+ {id:"q6",t:44,kind:"reserve",label:"Q6",owners:["henil","quan","aimum"],asks:true,
+  react:"Love that.",say:()=>"What part of your work do you still do by hand, on purpose?",
+  when:"Asked if there's time. Third to cut."},
+ {id:"q7",t:48,kind:"reserve",label:"Q7",owners:["henil","aimum"],asks:true,protect:true,
+  react:"Thanks, Nathan.",say:()=>"What common product advice do you disagree with?",
+  when:"Always asked. Our last question before the Closing."},
+ {id:"lastq",t:52,kind:"closing",label:"Last Q",owners:["aimum","quan"],asks:true,protect:true,
+  react:"This has been brilliant.",say:()=>"Before we wrap up, is there anything we didn't ask that you'd like to add?",
+  when:"Leave room. Guests often give their best line here."},
+ {id:"signoff",t:55,kind:"closing",label:"Sign-off",owners:["aimum","quan"],asks:false,protect:true,
+  say:(host,with_)=>`Nathan, thank you for your time and for being so open with us. Thanks for listening to Design Talk. I'm ${host}, with ${with_}, from UCD Smurfit.`,
+  when:"Read word for word. Everyone smiles and stays quiet for 5 seconds after."},
+ {id:"offair",t:56,kind:"after",label:"Off air",owners:["aimum","quan"],protect:true,
+  say:()=>"Stop the recording, then thank Nathan off the record.",
+  when:"Download every recording file the same day into the Design Teaming Podcast Drive folder."}
+];
+const CHECKS = [
+ "Everyone on Zoom by 2:45 pm, headphones on, mic tested",
+ "Cameras on, light in front, plain background",
+ "Zoom names show first names only",
+ "Phones silent, other apps closed",
+ "Everyone has this page open in their own view (check the team table above)",
+ "Team WhatsApp group open",
+ "Cloud recording on, alternative host set",
+ "One teammate recording locally as backup",
+ "Tap Go live"
+];
+
+/* ---------- storage ---------- */
+const S={get(k,d){try{const v=localStorage.getItem("g7cue:"+k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+         set(k,v){try{localStorage.setItem("g7cue:"+k,JSON.stringify(v))}catch(e){}}};
+const $=id=>document.getElementById(id);
+const idxOf=id=>CUES.findIndex(c=>c.id===id);
+
+/* ---------- identity ---------- */
+let me=S.get("me",null); // {who, host}
+function identify(raw){
+  const v=(raw||"").trim().toLowerCase();
+  if(!v) return {err:"Type your first name."};
+  if(v===HOST_CODE) return {who:"aimum",host:true};
+  if(v.includes("@")){ const n=v.split("@")[0]; for(const k of TEAM) if(n.includes(k)) return {who:k,host:false}; }
+  if(v==="aimum") return {err:"Aimum, use your host code."};
+  for(const k of TEAM) if(v===k||v===PEOPLE[k].toLowerCase()) return {who:k,host:false};
+  return {err:"Name not recognised. Use your first name: Quan, Henil or Marshal."};
+}
+$("gateForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const r=identify($("who").value);
+  if(r.err){$("gateErr").textContent=r.err;return;}
+  me=r;S.set("me",me);start();
+});
+$("switchBtn").addEventListener("click",()=>{S.set("me",null);location.reload();});
+
+/* ---------- state ---------- */
+// shared (host-owned) state, received over the live channel
+let live=S.get("live",{live:false,cue:0,running:false,elapsed:0,skips:[],absent:[],seq:0});
+let liveRecvAt=Date.now();      // local time when "elapsed" was received
+let follow=true;                // team: follow the live cue
+let view=S.get("view",0);       // where this person is looking
+// practice (local) timer
+let pr=S.get("practice",{running:false,elapsed:0,at:0});
+const peers={};                 // host: who -> {view,follow,at}
+
+const isLive=()=>!!live.live;
+const absent=()=>new Set(live.absent||[]);
+const present=k=>!absent().has(k);
+const skipped=id=>(live.skips||[]).includes(id);
+const ownerOf=c=>{ if(!c.owners) return null; for(const o of c.owners) if(o==="aimum"||present(o)) return o; return "aimum"; };
+const hostName=()=>PEOPLE.aimum;
+
+function elapsedMs(){
+  if(isLive()) return live.elapsed+(live.running?Date.now()-liveRecvAt:0);
+  return pr.elapsed+(pr.running?Date.now()-pr.at:0);
+}
+const fmt=m=>{m=Math.max(0,m);const mm=Math.floor(m),ss=Math.floor((m-mm)*60);return String(mm).padStart(2,"0")+":"+String(ss).padStart(2,"0")};
+const fmtPlan=m=>{const mm=Math.floor(m),ss=Math.round((m-mm)*60);return mm+":"+String(ss).padStart(2,"0")};
+function joinNames(arr){ if(arr.length<=1) return arr.join(""); return arr.slice(0,-1).join(", ")+" and "+arr[arr.length-1]; }
+
+// previous asking cue that isn't skipped
+function prevAsker(i){ for(let j=i-1;j>=0;j--){const c=CUES[j]; if(c.asks && !skipped(c.id)) return ownerOf(c);} return null; }
+
+function linesFor(i){
+  const c=CUES[i], out=[];
+  if(c.kind==="hello"){
+    TEAM.filter(present).forEach(k=>out.push({who:k,say:`Hi, I'm ${PEOPLE[k]}.`,style:"main"}));
+    return out;
+  }
+  if(c.kind==="listen") return [{who:"nathan",say:"Nathan introduces himself.",style:"dim"}];
+  const o=ownerOf(c);
+  if(c.kind==="script"||c.kind==="after"||c.id==="signoff"){
+    const withList=joinNames(TEAM.filter(present).map(k=>PEOPLE[k]));
+    out.push({who:o,say:c.say(PEOPLE[o],withList),style:c.kind==="after"?"dim":"main",quote:c.kind!=="after"});
+    return out;
+  }
+  const p=prevAsker(i);
+  if(p && p!==o){
+    out.push({who:p,say:o==="aimum"?`${PEOPLE[o]}, back to you.`:`${PEOPLE[o]}, over to you.`,style:"soft",quote:true,tag:"handover"});
+  }
+  if(c.react) out.push({who:o,say:`For example: "${c.react}"`,style:"hint",tag:"quick reaction, your own words"});
+  out.push({who:o,say:c.say(),style:"main",quote:true});
+  return out;
+}
+const involves=(i,who)=>linesFor(i).some(l=>l.who===who);
+const asksAt=(i,who)=>{const ls=linesFor(i);return ls.some(l=>l.who===who && l.style==="main");};
+
+/* ---------- live channel (ntfy.sh) ---------- */
+const BASE="https://ntfy.sh/"+TOPIC;
+let es=null, netOk=false;
+function send(obj){
+  try{ fetch(BASE,{method:"POST",body:JSON.stringify(obj)}).catch(()=>setNet(false)); }catch(e){}
+}
+function setNet(ok){ netOk=ok; const n=$("net"); n.textContent=ok?"Live link OK":"No live link"; n.className="pill "+(ok?"ok":"late"); }
+function connect(){
+  try{
+    es=new EventSource(BASE+"/sse?since=12h");
+    es.onopen=()=>setNet(true);
+    es.onerror=()=>setNet(false);
+    es.onmessage=ev=>{
+      let m; try{m=JSON.parse(ev.data);}catch(e){return;}
+      if(m.event!=="message") return;
+      let d; try{d=JSON.parse(m.message);}catch(e){return;}
+      handle(d,m.time);
+    };
+  }catch(e){ setNet(false); }
+}
+function handle(d,serverTime){
+  const sent=serverTime?serverTime*1000:(d.at||Date.now());
+  const age=Date.now()-sent;
+  if(d.k==="state"){
+    if(sent<(live._ts||0)-5000) return;
+    const wasLive=isLive();
+    live={...d,_ts:sent};
+    if(age>3*3600*1000) live.live=false;
+    if(live.running) live.elapsed=(d.elapsed||0)+Math.max(0,age);
+    liveRecvAt=Date.now();
+    S.set("live",live);
+    if(!wasLive && isLive()) follow=true;
+    if(follow && isLive()) view=live.cue;
+    render(); sayHere();
+  } else if(d.k==="here" && me && me.host){
+    if(age>15*60*1000) return;
+    const prev=peers[d.who];
+    if(!prev || prev.at<=sent){ peers[d.who]={view:d.view,follow:d.follow,at:sent}; renderTeam(); }
+  } else if(d.k==="force" && me && !me.host){
+    if(age>30000) return;
+    if(d.to==="all"||d.to===me.who){ follow=true; if(isLive()) view=live.cue; render(); sayHere(true); }
+  }
+}
+let lastHere="";
+function sayHere(force){
+  if(!me || me.host || !isLive()) return;
+  const sig=view+"|"+follow;
+  if(!force && sig===lastHere) return;
+  lastHere=sig; send({k:"here",who:me.who,view,follow,at:Date.now()});
+}
+setInterval(()=>{ if(me && !me.host && isLive()) sayHere(true); },180000);
+
+/* ---------- host actions ---------- */
+function publish(patch){
+  const e=patch.elapsed!==undefined?patch.elapsed:elapsedMs();
+  live={...live,...patch,elapsed:e,seq:(live.seq||0)+1,at:Date.now(),_ts:Date.now(),k:"state"};
+  liveRecvAt=Date.now(); S.set("live",live);
+  if(isLive()||patch.live===false) send(live);
+  render();
+}
+setInterval(()=>{ if(me && me.host && isLive()) send({...live,elapsed:elapsedMs(),at:Date.now()}); },180000);
+
+/* ---------- navigation ---------- */
+function stepFrom(i,dir){ let j=i+dir; while(j>=0 && j<CUES.length && skipped(CUES[j].id)) j+=dir; return Math.min(Math.max(j,0),CUES.length-1); }
+function go(dir){
+  if(me.host && isLive()){ publish({cue:stepFrom(live.cue,dir)}); view=live.cue; }
+  else { view=stepFrom(view,dir); if(isLive()) follow=(view===live.cue); }
+  S.set("view",view); render(); sayHere();
+}
+$("prevBtn").addEventListener("click",()=>go(-1));
+$("nextBtn").addEventListener("click",()=>go(1));
+document.addEventListener("keydown",e=>{ if(!me||e.target.closest("input,textarea"))return; if(e.key==="ArrowRight")go(1); if(e.key==="ArrowLeft")go(-1); });
+$("backLive").addEventListener("click",()=>{follow=true;view=live.cue;render();sayHere();});
+
+$("liveBtn").addEventListener("click",()=>{
+  if(isLive()){ publish({live:false,running:false}); }
+  else { publish({live:true,cue:view,running:false,elapsed:0}); }
+});
+$("startBtn").addEventListener("click",()=>{
+  if(me.host && isLive()){ const e=elapsedMs(); publish({running:!live.running,elapsed:e}); }
+  else { if(pr.running){pr.elapsed=elapsedMs();pr.running=false;} else {pr.at=Date.now();pr.running=true;} S.set("practice",pr); render(); }
+});
+$("resetBtn").addEventListener("click",()=>{
+  if(me.host && isLive()){ publish({running:false,elapsed:0,cue:0}); view=0; }
+  else { pr={running:false,elapsed:0,at:0}; S.set("practice",pr); view=0; S.set("view",0); render(); }
+});
+$("pullAll").addEventListener("click",()=>send({k:"force",to:"all",cue:live.cue,at:Date.now()}));
+$("cutBtn").addEventListener("click",()=>{
+  const cur=me.host&&isLive()?live.cue:view;
+  const next=CUT_ORDER.find(id=>!skipped(id) && idxOf(id)>cur);
+  if(!next) return;
+  toggleSkip(next);
+});
+function toggleSkip(id){
+  const c=CUES[idxOf(id)]; if(c.protect) return;
+  const s=new Set(live.skips||[]); s.has(id)?s.delete(id):s.add(id);
+  if(me.host){ if(isLive()) publish({skips:[...s]}); else { live={...live,skips:[...s]}; S.set("live",live); render(); } }
+}
+
+/* ---------- rendering ---------- */
+function render(){
+  if(!me) return;
+  const L=isLive();
+  if(me.host && L) view=live.cue;
+  view=Math.min(Math.max(view,0),CUES.length-1);
+  const i=view, c=CUES[i];
+
+  $("meTag").textContent=PEOPLE[me.who]+(me.host?" · host":"");
+  $("practiceBanner").hidden=L;
+  $("onair").classList.toggle("live",L && live.running);
+  const off=L && !me.host && view!==live.cue;
+  $("offBanner").hidden=!off;
+  if(off) $("offText").textContent=`You're looking at ${c.label}. Live is ${CUES[live.cue].label}.`;
+
+  // nav: team can't drive during live; they can only peek
+  $("nextBtn").textContent=(L && !me.host)?"Peek next →":"Next cue →";
+  $("prevBtn").textContent=(L && !me.host)?"← Peek back":"← Back";
+
+  // card
+  $("nowKind").textContent=KIND[c.kind]; $("nowKind").className="kind k-"+c.kind;
+  $("nowLabel").textContent=c.label+(skipped(c.id)?" (skipped)":"");
+  $("nowPlanned").textContent="planned "+fmtPlan(c.t);
+  const box=$("nowLines"); box.innerHTML="";
+  const ls=linesFor(i);
+  ls.forEach(l=>{
+    const d=document.createElement("div");
+    d.className="line"+(l.who===me.who?" me":"")+(l.style!=="main"?" "+l.style:"");
+    const w=document.createElement("span"); w.className="who";
+    w.textContent=PEOPLE[l.who]+(l.who===me.who?" (you)":"")+(l.tag?" · "+l.tag:"");
+    const s=document.createElement("span"); s.className="say";
+    s.textContent=l.quote?"“"+l.say+"”":l.say;
+    d.append(w,s); box.append(d);
+  });
+  $("nowWhen").innerHTML="<b>When</b><span></span>"; $("nowWhen").lastChild.textContent=c.when;
+  $("now").classList.toggle("mine",involves(i,me.who) && c.kind!=="listen");
+  $("prevBtn").disabled=i===0; $("nextBtn").disabled=i===CUES.length-1;
+
+  // next
+  const ni=stepFrom(i,1);
+  if(ni!==i){ const nl=linesFor(ni).filter(l=>l.style==="main").pop()||linesFor(ni)[0];
+    $("nextSay").textContent=(nl.who==="nathan"?"":PEOPLE[nl.who]+": ")+nl.say;
+    $("nextSub").textContent=KIND[CUES[ni].kind]+" · "+CUES[ni].label+" · planned "+fmtPlan(CUES[ni].t);
+  } else { $("nextSay").textContent="End of the running order."; $("nextSub").textContent=""; }
+
+  // mine
+  const mc=$("mineCard"); mc.classList.remove("hot");
+  const base=L?live.cue:view;
+  if(involves(base,me.who) && CUES[base].kind!=="listen"){ $("mineSay").textContent="It's you, right now."; $("mineSub").textContent=L?"Read the live card.":"Read the big text above."; mc.classList.add("hot"); }
+  else{
+    let j=base+1; while(j<CUES.length && (skipped(CUES[j].id) || !involves(j,me.who))) j++;
+    if(j<CUES.length){ const l=linesFor(j).filter(x=>x.who===me.who).pop(); let away=0; for(let k=base+1;k<=j;k++) if(!skipped(CUES[k].id)) away++;
+      $("mineSay").textContent=(l.style==="soft"?"Handover: ":"")+"“"+l.say+"”";
+      $("mineSub").textContent=CUES[j].label+" · "+(away===1?"next cue":away+" cues away")+" · planned "+fmtPlan(CUES[j].t)+(CUES[j].kind==="popup"?" · optional":"");
+      if(away===1) mc.classList.add("hot");
+    } else { $("mineSay").textContent="No more lines for you."; $("mineSub").textContent="Stay muted and enjoy it."; }
+  }
+
+  // running order
+  const ol=$("order"); ol.innerHTML="";
+  CUES.forEach((q,k)=>{
+    const li=document.createElement("li");
+    li.className=(L&&k===live.cue?"live ":"")+(involves(k,me.who)&&q.kind!=="listen"?"mine ":"")+(skipped(q.id)?"skipped":"");
+    const b=document.createElement("button"); b.type="button"; b.className="go";
+    const main=linesFor(k).filter(x=>x.style==="main"||x.style==="dim");
+    const who=[...new Set(main.map(x=>PEOPLE[x.who]))].join(", ");
+    b.innerHTML='<span class="t"></span><span class="lab"></span><span class="txt"></span>';
+    b.children[0].textContent=fmtPlan(q.t); b.children[1].textContent=q.label;
+    b.children[2].textContent=main.map(x=>x.say).join(" / ");
+    const sm=document.createElement("small"); sm.textContent=KIND[q.kind]+" · "+who+(q.protect?"":" · can cut"); b.children[2].append(sm);
+    if(k===view) b.setAttribute("aria-current","step");
+    b.addEventListener("click",()=>{
+      if(me.host && L){ publish({cue:k}); }
+      else { view=k; if(L) follow=(k===live.cue); S.set("view",view); render(); sayHere(); }
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+    li.append(b);
+    if(me.host && !q.protect){
+      const sk=document.createElement("button"); sk.type="button"; sk.className="btn small skip";
+      sk.textContent=skipped(q.id)?"Restore":"Skip"; sk.addEventListener("click",()=>toggleSkip(q.id)); li.append(sk);
+    }
+    ol.append(li);
+  });
+
+  // host bits
+  $("console").hidden=!me.host; $("checkWrap").hidden=!me.host;
+  if(me.host){
+    $("liveBtn").textContent=L?"End live session":"Go live";
+    $("liveBtn").className="btn "+(L?"warn":"primary");
+    $("pullAll").disabled=!L;
+    const nextCut=CUT_ORDER.find(id=>!skipped(id) && idxOf(id)>(L?live.cue:view));
+    $("cutBtn").disabled=!nextCut;
+    $("cutBtn").textContent=nextCut?`Behind? Skip ${CUES[idxOf(nextCut)].label}`:"Nothing left to cut";
+    $("cutHint").textContent=L?"Live: your Next, Back, timer, skips and attendance update everyone's screen.":"Not live yet. Practise freely; tap Go live at 2:45 pm when the team is on Zoom.";
+    renderTeam();
+  }
+  tick();
+}
+function renderTeam(){
+  if(!me||!me.host) return;
+  const tb=$("teamRows"); tb.innerHTML="";
+  TEAM.forEach(k=>{
+    const p=peers[k]; const on=p && Date.now()-p.at<240000;
+    const tr=document.createElement("tr");
+    const c1=document.createElement("td"); const cb=document.createElement("input"); cb.type="checkbox"; cb.id="present-"+k; cb.checked=present(k);
+    cb.setAttribute("aria-label",PEOPLE[k]+" on the call");
+    cb.addEventListener("change",()=>{ const a=absent(); cb.checked?a.delete(k):a.add(k);
+      if(isLive()) publish({absent:[...a]}); else { live={...live,absent:[...a]}; S.set("live",live); render(); } });
+    c1.append(cb);
+    const c2=document.createElement("td"); c2.textContent=PEOPLE[k];
+    const c3=document.createElement("td"); c3.innerHTML='<span class="dot'+(on?" on":"")+'"></span>'+(on?"Open":"Not seen");
+    const c4=document.createElement("td");
+    if(on){ const onLive=p.view===live.cue; c4.innerHTML=`<span class="${onLive?"flag-ok":"flag-off"}"></span>`; c4.firstChild.textContent=onLive?"Live cue":CUES[p.view]?.label||"?"; }
+    else c4.textContent="–";
+    const c5=document.createElement("td");
+    const mv=document.createElement("button"); mv.type="button"; mv.className="btn small"; mv.textContent="Move to live";
+    mv.disabled=!isLive(); mv.addEventListener("click",()=>send({k:"force",to:k,cue:live.cue,at:Date.now()}));
+    c5.append(mv);
+    tr.append(c1,c2,c3,c4,c5); tb.append(tr);
+  });
+}
+function tick(){
+  if(!me) return;
+  const m=elapsedMs()/60000;
+  $("clock").textContent=fmt(m);
+  const running=isLive()?live.running:pr.running;
+  $("startBtn").textContent=running?"Pause timer":(elapsedMs()?"Resume timer":"Start timer");
+  const p=$("pace"), base=isLive()?live.cue:view;
+  if(!running && !elapsedMs()){p.textContent=isLive()?"Live, timer not started":"Not started";p.className="pill";return;}
+  const d=m-CUES[base].t;
+  if(d>2){p.textContent=Math.round(d)+" min behind";p.className="pill late";}
+  else if(d<-3){p.textContent=Math.round(-d)+" min ahead";p.className="pill ok";}
+  else {p.textContent="On time";p.className="pill ok";}
+}
+
+/* practice timer for team members lives in the card nav row */
+function addPracticeTimer(){
+  if(me.host) return;
+  const row=document.createElement("div"); row.className="row"; row.id="practiceTimer";
+  const a=document.createElement("button"); a.type="button"; a.className="btn"; a.id="pStart";
+  const r=document.createElement("button"); r.type="button"; r.className="btn"; r.textContent="Reset practice";
+  a.addEventListener("click",()=>$("startBtn").click());
+  r.addEventListener("click",()=>$("resetBtn").click());
+  row.append(a,r); $("practiceBanner").after(row);
+  setInterval(()=>{ row.hidden=isLive(); a.textContent=pr.running?"Pause practice timer":"Start practice timer"; },500);
+}
+
+/* checklist */
+function buildChecks(){
+  const done=S.get("checks",[]);
+  CHECKS.forEach((t,k)=>{
+    const li=document.createElement("li"); const id="chk"+k;
+    li.innerHTML='<label for="'+id+'"><input type="checkbox" id="'+id+'"><span></span></label>';
+    li.querySelector("span").textContent=t;
+    const cb=li.querySelector("input"); cb.checked=done.includes(k);
+    cb.addEventListener("change",()=>{const s=new Set(S.get("checks",[]));cb.checked?s.add(k):s.delete(k);S.set("checks",[...s]);});
+    $("checks").append(li);
+  });
+}
+
+function start(){
+  $("gate").hidden=true; $("app").hidden=false;
+  if(me.host) buildChecks(); else addPracticeTimer();
+  render(); connect();
+  setInterval(tick,1000);
+  setInterval(()=>{ if(me.host) renderTeam(); },15000);
+  try{ navigator.wakeLock && navigator.wakeLock.request("screen").catch(()=>{}); }catch(e){}
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ try{navigator.wakeLock&&navigator.wakeLock.request("screen").catch(()=>{});}catch(e){} sayHere(true);} });
+}
+if(me && me.who) start();
+})();
+</script>
+</body>
+</html>
