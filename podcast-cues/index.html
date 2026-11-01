@@ -167,7 +167,7 @@ h2{font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transf
     <h1>Design Talk<br>with Nathan</h1>
     <p>Type your first name to open your view.</p>
     <label for="who" class="lede" style="font-weight:700">Your name</label>
-    <input id="who" name="who" placeholder="e.g. Quan" autocapitalize="off" spellcheck="false">
+    <input id="who" name="who" autocapitalize="off" spellcheck="false">
     <div class="err" id="gateErr" role="alert"></div>
     <button class="btn primary" type="submit" style="padding:14px;font-size:18px">Open my view</button>
   </form>
@@ -254,7 +254,7 @@ h2{font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transf
       <div class="rule"><h3>Someone drops mid-call</h3><p>Message OUT on WhatsApp. Aimum marks you off the call and your next question moves on everyone's screen.</p></div>
       <div class="rule"><h3>Nathan already covers a later topic</h3><p>If he answers a later question on his own while telling another story, Aimum skips that question.</p></div>
       <div class="rule"><h3>Running behind</h3><p>Cut in this order: 5a, 5b, Q6, 3a, 1a. Never cut the intro, the PinnTag question, Q1 to Q5, Q7 or the Closing.</p></div>
-      <div class="rule"><h3>Aimum drops</h3><p>Quan hosts. Read Aimum's lines from your screen until he's back. The Zoom recording keeps running.</p></div>
+      <div class="rule"><h3>The page stops following</h3><p>Reload it. If it still doesn't move with Aimum, tap "Peek next" yourself and keep up with the conversation.</p></div>
       <div class="rule"><h3>Nathan drops</h3><p>Stay on, stay muted, don't chat about it on the call. Aimum messages Nathan. We cut the gap later.</p></div>
       <div class="rule"><h3>Nathan goes quiet</h3><p>He may be thinking. Give him 3 to 4 seconds. If he looks unsure what we mean, Aimum asks it again more simply.</p></div>
       <div class="rule"><h3>You fluff your question</h3><p>Stop, say "Let me ask that again", and repeat it cleanly. The editor cuts the first try.</p></div>
@@ -275,7 +275,7 @@ h2{font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transf
 (function(){
 /* ===== Settings you can edit ===== */
 const TOPIC = (new URLSearchParams(location.search).get("topic")) || "g7-designtalk-nathan-siykl5gj88"; // live channel on ntfy.sh
-const HOST_CODE = "aimum-host";                   // what Aimum types to get the host console
+const HOST_HASH = "e64e84b1968b30cc25e53077ff068e0341d861edecec135988d278aee46a15dd"; // SHA-256 of the host code (the code itself is not stored here)
 /* ================================= */
 
 const PEOPLE = {aimum:"Aimum", quan:"Quan", henil:"Henil", marshal:"Marshal", nathan:"Nathan"};
@@ -362,18 +362,22 @@ const idxOf=id=>CUES.findIndex(c=>c.id===id);
 
 /* ---------- identity ---------- */
 let me=S.get("me",null); // {who, host}
-function identify(raw){
+async function sha256(t){
+  const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+}
+async function identify(raw){
   const v=(raw||"").trim().toLowerCase();
   if(!v) return {err:"Type your first name."};
-  if(v===HOST_CODE) return {who:"aimum",host:true};
+  try{ if(await sha256(v)===HOST_HASH) return {who:"aimum",host:true}; }catch(e){}
   if(v.includes("@")){ const n=v.split("@")[0]; for(const k of TEAM) if(n.includes(k)) return {who:k,host:false}; }
   if(v==="aimum") return {err:"Aimum, use your host code."};
   for(const k of TEAM) if(v===k||v===PEOPLE[k].toLowerCase()) return {who:k,host:false};
-  return {err:"Name not recognised. Use your first name: Quan, Henil or Marshal."};
+  return {err:"Name not recognised. Type your first name."};
 }
-$("gateForm").addEventListener("submit",e=>{
+$("gateForm").addEventListener("submit",async e=>{
   e.preventDefault();
-  const r=identify($("who").value);
+  const r=await identify($("who").value);
   if(r.err){$("gateErr").textContent=r.err;return;}
   me=r;S.set("me",me);start();
 });
@@ -567,7 +571,7 @@ function render(){
     s.textContent=l.quote?"“"+l.say+"”":l.say;
     d.append(w,s); box.append(d);
   });
-  $("nowWhen").innerHTML="<b>When</b><span></span>"; $("nowWhen").lastChild.textContent=c.when;
+  $("nowWhen").innerHTML="<b>When</b><span></span>"; $("nowWhen").lastChild.textContent=(c.kind==="popup"?"Aimum decides; usually asked. ":"")+c.when;
   $("now").classList.toggle("mine",involves(i,me.who) && c.kind!=="listen" && !onlyHands(i,me.who));
   $("now").classList.toggle("handing",onlyHands(i,me.who));
   $("notAskedBtn").hidden=!(me.host && (c.kind==="popup"||c.kind==="reserve") && !skipped(c.id));
