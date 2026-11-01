@@ -96,6 +96,7 @@ main .wrap{display:flex;flex-direction:column;gap:18px;padding-block:18px 48px}
 .line.handover .who,.line.handover.me .who{color:var(--hand)}
 .line.hint .say{font-size:16px;font-weight:400;color:var(--muted);font-style:italic}
 .line.dim .say{font-size:18px;font-weight:400;color:var(--muted)}
+.line.other .say{font-size:18px;font-weight:400;color:var(--muted)}
 .when{background:var(--bg);border-radius:6px;padding:10px 12px;font-size:15px;display:flex;flex-direction:column;gap:4px}
 .when b{font-family:var(--f-display);letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
 .nav{display:grid;grid-template-columns:1fr 2fr;gap:10px}
@@ -553,7 +554,7 @@ function render(){
   const ls=linesFor(i);
   ls.forEach(l=>{
     const d=document.createElement("div");
-    d.className="line"+(l.who===me.who?" me":"")+(l.style!=="main"?" "+l.style:"")+(l.tag==="handover"?" handover":"");
+    d.className="line"+(l.who===me.who?" me":"")+(l.style!=="main"?" "+l.style:"")+(l.tag==="handover"?" handover":"")+(l.style==="main"&&l.who!==me.who?" other":"");
     const w=document.createElement("span"); w.className="who";
     w.textContent=PEOPLE[l.who]+(l.who===me.who?" (you)":"")+(l.tag?" · "+l.tag:"");
     const s=document.createElement("span"); s.className="say";
