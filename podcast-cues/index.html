@@ -99,7 +99,10 @@ main .wrap{display:flex;flex-direction:column;gap:18px;padding-block:18px 48px}
 .line.other .say{font-size:18px;font-weight:400;color:var(--muted)}
 .when{background:var(--bg);border-radius:6px;padding:10px 12px;font-size:15px;display:flex;flex-direction:column;gap:4px}
 .when b{font-family:var(--f-display);letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
-.nav{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.nav{display:flex;flex-wrap:wrap;gap:10px}
+.nav .btn{flex:1}
+.nav #nextBtn{flex:2}
+.nav #notAskedBtn{flex-basis:100%;order:3}
 .nav .btn{padding:14px;font-size:16px}
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:560px){.duo{grid-template-columns:1fr}}
@@ -214,6 +217,7 @@ h2{font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transf
       <div class="when" id="nowWhen"></div>
       <div class="nav" id="nav">
         <button class="btn" id="prevBtn" type="button">← Back</button>
+        <button class="btn warn" id="notAskedBtn" type="button" hidden>Pop-up not asked, skip it</button>
         <button class="btn primary" id="nextBtn" type="button">Next cue →</button>
       </div>
     </section>
@@ -224,7 +228,7 @@ h2{font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transf
     </div>
 
     <h2>Running order</h2>
-    <p class="lede">Times are minutes from "Hi, and welcome". Tap a row to look at it; in a live session, "Back to live" returns you. Your questions are yellow; your handovers are purple.</p>
+    <p class="lede">Times are minutes from "Hi, and welcome". Tap a row to look at it; in a live session, "Back to live" returns you. Your lines are yellow; your handovers are purple.</p>
     <ol class="order" id="order"></ol>
 
     <div id="checkWrap" hidden>
@@ -278,6 +282,7 @@ const PEOPLE = {aimum:"Aimum", quan:"Quan", henil:"Henil", marshal:"Marshal", na
 const TEAM = ["quan","henil","marshal"];           // can be marked off the call
 const KIND = {script:"Script",hello:"Hellos",listen:"Listen",main:"Main question",popup:"Pop-up",reserve:"Reserve",closing:"Closing",after:"After"};
 const CUT_ORDER = ["5a","5b","q6","3a","1a"];
+const canSkip=c=>["main","popup","reserve"].includes(c.kind); // any question can be skipped; only CUT_ORDER is cut for time
 
 // owners = who asks, first one present wins.
 const CUES = [
@@ -324,7 +329,7 @@ const CUES = [
  {id:"q6",t:44,kind:"reserve",label:"Q6",owners:["henil","quan","aimum"],asks:true,
   react:"Love that.",say:()=>"What part of your work do you still do by hand, on purpose?",
   when:"Asked if there's time. Third to cut."},
- {id:"q7",t:48,kind:"reserve",label:"Q7",owners:["henil","aimum"],asks:true,protect:true,
+ {id:"q7",t:48,kind:"main",label:"Q7",owners:["henil","aimum"],asks:true,protect:true,
   react:"Thanks, Nathan.",say:()=>"What common product advice do you disagree with?",
   when:"Always asked. Our last question before the Closing."},
  {id:"lastq",t:52,kind:"closing",label:"Last Q",owners:["aimum","quan"],asks:true,protect:true,
@@ -499,6 +504,7 @@ function go(dir){
 }
 $("prevBtn").addEventListener("click",()=>go(-1));
 $("nextBtn").addEventListener("click",()=>go(1));
+$("notAskedBtn").addEventListener("click",()=>{ const cur=me.host&&isLive()?live.cue:view; toggleSkip(CUES[cur].id); go(1); });
 document.addEventListener("keydown",e=>{ if(!me||e.target.closest("input,textarea"))return; if(e.key==="ArrowRight")go(1); if(e.key==="ArrowLeft")go(-1); });
 $("backLive").addEventListener("click",()=>{follow=true;view=live.cue;render();sayHere();});
 
@@ -522,7 +528,7 @@ $("cutBtn").addEventListener("click",()=>{
   toggleSkip(next);
 });
 function toggleSkip(id){
-  const c=CUES[idxOf(id)]; if(c.protect) return;
+  const c=CUES[idxOf(id)]; if(!canSkip(c)) return;
   const s=new Set(live.skips||[]); s.has(id)?s.delete(id):s.add(id);
   if(me.host){ if(isLive()) publish({skips:[...s]}); else { live={...live,skips:[...s]}; S.set("live",live); render(); } }
 }
@@ -564,6 +570,7 @@ function render(){
   $("nowWhen").innerHTML="<b>When</b><span></span>"; $("nowWhen").lastChild.textContent=c.when;
   $("now").classList.toggle("mine",involves(i,me.who) && c.kind!=="listen" && !onlyHands(i,me.who));
   $("now").classList.toggle("handing",onlyHands(i,me.who));
+  $("notAskedBtn").hidden=!(me.host && (c.kind==="popup"||c.kind==="reserve") && !skipped(c.id));
   $("prevBtn").disabled=i===0; $("nextBtn").disabled=i===CUES.length-1;
 
   // next
@@ -599,7 +606,7 @@ function render(){
     b.innerHTML='<span class="t"></span><span class="lab"></span><span class="txt"></span>';
     b.children[0].textContent=fmtPlan(q.t); b.children[1].textContent=q.label;
     b.children[2].textContent=main.map(x=>x.say).join(" / ");
-    const sm=document.createElement("small"); sm.textContent=KIND[q.kind]+" · "+who+(q.protect?"":" · can cut"); b.children[2].append(sm);
+    const sm=document.createElement("small"); sm.textContent=KIND[q.kind]+" · "+who+(CUT_ORDER.includes(q.id)?" · can cut":""); b.children[2].append(sm);
     if(k===view) b.setAttribute("aria-current","step");
     b.addEventListener("click",()=>{
       if(me.host && L){ publish({cue:k}); }
@@ -607,7 +614,7 @@ function render(){
       window.scrollTo({top:0,behavior:"smooth"});
     });
     li.append(b);
-    if(me.host && !q.protect){
+    if(me.host && canSkip(q)){
       const sk=document.createElement("button"); sk.type="button"; sk.className="btn small skip";
       sk.textContent=skipped(q.id)?"Restore":"Skip"; sk.addEventListener("click",()=>toggleSkip(q.id)); li.append(sk);
     }
@@ -623,7 +630,7 @@ function render(){
     const nextCut=CUT_ORDER.find(id=>!skipped(id) && idxOf(id)>(L?live.cue:view));
     $("cutBtn").disabled=!nextCut;
     $("cutBtn").textContent=nextCut?`Behind? Skip ${CUES[idxOf(nextCut)].label}`:"Nothing left to cut";
-    $("cutHint").textContent=L?"Live: your Next, Back, timer, skips and attendance update everyone's screen.":"Not live yet. Practise freely; tap Go live at 2:45 pm when the team is on Zoom.";
+    $("cutHint").textContent=L?"Live: your Next, Back, timer, skips and attendance update everyone's screen. If a question isn't asked, tap \"Pop-up not asked, skip it\" instead of Next so the next handover is right.":"Not live yet. Practise freely; tap Go live at 2:45 pm when the team is on Zoom.";
     renderTeam();
   }
   tick();
