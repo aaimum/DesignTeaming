@@ -479,7 +479,7 @@ function handle(d,serverTime){
   } else if(d.k==="here" && me && me.host){
     if(age>15*60*1000) return;
     const prev=peers[d.who];
-    if(!prev || prev.at<=sent){ peers[d.who]={view:d.view,follow:d.follow,at:sent}; renderTeam(); }
+    if(!prev || prev.at<=sent){ peers[d.who]={view:d.view,follow:d.follow,live:d.live!==false,at:sent}; renderTeam(); }
   } else if(d.k==="force" && me && !me.host){
     if(age>30000) return;
     if(d.to==="all"||d.to===me.who){ follow=true; if(isLive()) view=live.cue; render(); sayHere(true); }
@@ -487,12 +487,12 @@ function handle(d,serverTime){
 }
 let lastHere="";
 function sayHere(force){
-  if(!me || me.host || !isLive()) return;
-  const sig=view+"|"+follow;
+  if(!me || me.host) return;
+  const L=isLive(), sig=L?view+"|"+follow:"practice"; // in practice only presence is reported, not every tap
   if(!force && sig===lastHere) return;
-  lastHere=sig; send({k:"here",who:me.who,view,follow,at:Date.now()});
+  lastHere=sig; send({k:"here",who:me.who,view,follow,live:L,at:Date.now()});
 }
-setInterval(()=>{ if(me && !me.host && isLive()) sayHere(true); },180000);
+setInterval(()=>{ if(me && !me.host) sayHere(true); },180000);
 
 /* ---------- host actions ---------- */
 function publish(patch){
@@ -658,7 +658,8 @@ function renderTeam(){
     const c2=document.createElement("td"); c2.textContent=PEOPLE[k];
     const c3=document.createElement("td"); c3.innerHTML='<span class="dot'+(on?" on":"")+'"></span>'+(on?"Open":"Not seen");
     const c4=document.createElement("td");
-    if(on){ const onLive=p.view===live.cue; c4.innerHTML=`<span class="${onLive?"flag-ok":"flag-off"}"></span>`; c4.firstChild.textContent=onLive?"Live cue":CUES[p.view]?.label||"?"; }
+    if(on && (!p.live || !isLive())) c4.textContent=p.live?"–":"Practice";
+    else if(on){ const onLive=p.view===live.cue; c4.innerHTML=`<span class="${onLive?"flag-ok":"flag-off"}"></span>`; c4.firstChild.textContent=onLive?"Live cue":CUES[p.view]?.label||"?"; }
     else c4.textContent="–";
     const c5=document.createElement("td");
     const mv=document.createElement("button"); mv.type="button"; mv.className="btn small"; mv.textContent="Move to live";
@@ -710,7 +711,7 @@ function buildChecks(){
 function start(){
   $("gate").hidden=true; $("app").hidden=false;
   if(me.host) buildChecks(); else addPracticeTimer();
-  render(); connect();
+  render(); connect(); sayHere(true);
   setInterval(tick,1000);
   setInterval(()=>{ if(me.host) renderTeam(); },15000);
   try{ navigator.wakeLock && navigator.wakeLock.request("screen").catch(()=>{}); }catch(e){}
