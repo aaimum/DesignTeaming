@@ -278,8 +278,8 @@ const TOPIC = (new URLSearchParams(location.search).get("topic")) || "g7-designt
 const HOST_HASH = "9dac09a9e138814259e38cf8a800efa88541e845b0d50b05d71c706359700a4b"; // SHA-256 of the host code (the code itself is not stored here)
 /* ================================= */
 
-const PEOPLE = {aimum:"Aimum", quan:"Quan", henil:"Henil", marshal:"Marshal", nathan:"Nathan"};
-const TEAM = ["quan","henil","marshal"];           // can be marked off the call
+const PEOPLE = {aimum:"Aimum", quan:"Quan", henil:"Henil", teng:"Teng", nathan:"Nathan"};
+const TEAM = ["quan","henil","teng"];           // can be marked off the call
 const KIND = {script:"Script",hello:"Hellos",listen:"Listen",main:"Main question",popup:"Pop-up",reserve:"Reserve",closing:"Closing",after:"After"};
 const CUT_ORDER = ["5a","5b","q6","3a","1a"];
 const canSkip=c=>["main","popup","reserve"].includes(c.kind); // any question can be skipped; only CUT_ORDER is cut for time
@@ -305,10 +305,10 @@ const CUES = [
  {id:"1a",t:10,kind:"popup",label:"1a",owners:["aimum","quan"],asks:true,
   react:"Interesting.",say:()=>"What did you say no to this week?",
   when:"Ask if his day answer stays general. Skip if he already talked about priorities or saying no."},
- {id:"q2",t:13,kind:"main",label:"Q2",owners:["marshal","henil","aimum"],asks:true,protect:true,
+ {id:"q2",t:13,kind:"main",label:"Q2",owners:["teng","henil","aimum"],asks:true,protect:true,
   react:"Thanks, Nathan.",say:()=>"How did you go from coaching teams to running product?",
   when:"The story only Nathan can tell. Let him run with it."},
- {id:"q3",t:20,kind:"main",label:"Q3",owners:["marshal","henil","quan"],asks:true,protect:true,
+ {id:"q3",t:20,kind:"main",label:"Q3",owners:["teng","henil","quan"],asks:true,protect:true,
   react:"That's a great story.",say:()=>"What carries over from a big enterprise to a startup, and what doesn't?",
   when:"Straight after Nathan finishes Q2."},
  {id:"3a",t:25,kind:"popup",label:"3a",owners:["quan","henil","aimum"],asks:true,
@@ -362,6 +362,8 @@ const idxOf=id=>CUES.findIndex(c=>c.id===id);
 
 /* ---------- identity ---------- */
 let me=S.get("me",null); // {who, host}
+const ALIAS={marshal:"teng"};   // old login names still accepted
+if(me && ALIAS[me.who]){ me={...me,who:ALIAS[me.who]}; S.set("me",me); }
 async function sha256(t){
   const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));
   return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
@@ -372,6 +374,7 @@ async function identify(raw){
   try{ if(await sha256(v)===HOST_HASH) return {who:"aimum",host:true}; }catch(e){}
   if(v.includes("@")){ const n=v.split("@")[0]; for(const k of TEAM) if(n.includes(k)) return {who:k,host:false}; }
   if(v==="aimum") return {err:"Aimum, use your host code."};
+  if(ALIAS[v]) return {who:ALIAS[v],host:false};
   for(const k of TEAM) if(v===k||v===PEOPLE[k].toLowerCase()) return {who:k,host:false};
   return {err:"Name not recognised. Type your first name."};
 }
